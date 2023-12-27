@@ -114,4 +114,46 @@ public class BynarySearchTree<T extends Comparable<T >> {
         return nodo;
 
     }
+
+    //Preorden
+    public void preorder(NodoArbolBinario<T> nodo){
+        //Este es el preorder
+        System.out.println(nodo.getElement().toString());
+        if (nodo.getLeft() != null) {
+            //Hay un nodo hay preorder donde  va ser el nuevo nodo
+            preorder(nodo.getLeft());
+        }
+
+        if (nodo.getRigth() != null){
+            preorder(nodo.getRigth());
+        }
+    }
+    public void inorder(NodoArbolBinario<T> nodo){
+
+        if (nodo.getLeft() != null) {
+            //Hay un nodo hay preorder donde  va ser el nuevo nodo
+            inorder(nodo.getLeft());
+        }
+        //Este es el inorder
+        System.out.println(nodo.getElement().toString());
+        if (nodo.getRigth() != null){
+            inorder(nodo.getRigth());
+        }
+
+    }
+
+    public void postorder(NodoArbolBinario<T> nodo){
+
+        if (nodo.getLeft() != null) {
+            //Hay un nodo hay preorder donde  va ser el nuevo nodo
+            postorder(nodo.getLeft());
+        }
+
+        if (nodo.getRigth() != null){
+            postorder(nodo.getRigth());
+        }
+        //Este es el postorder
+        System.out.println(nodo.getElement().toString());
+
+    }
 }
