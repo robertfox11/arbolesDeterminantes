@@ -1,5 +1,7 @@
 package org.actividad2viu.arboles.binario.binary_search_tree;//package clase8;
 
+import org.actividad2viu.arboles.binario.binarySearchTree1.NodoArbolBinario;
+
 import java.util.*;
 import java.io.*;
 
@@ -129,6 +131,7 @@ class Employee extends Person
 public class BinarySearchTree<AnyType extends
         Comparable<? super AnyType>>
 {
+
     private BinaryNode<AnyType> root;
     private Comparator<? super AnyType> cmp; // para poder
     // otra forma de comparar claves
@@ -341,6 +344,8 @@ public class BinarySearchTree<AnyType extends
         return t;
     }
 
+
+
     /**
      * Internal method to find an item in a subtree.
      * @param x is item to search for.
@@ -382,6 +387,7 @@ public class BinarySearchTree<AnyType extends
         {
             this( x, null, null );
         }
+
 
         public BinaryNode( AnyType theElement, BinaryNode<AnyType> lt, BinaryNode<AnyType> rt )
         {
@@ -437,6 +443,7 @@ public class BinarySearchTree<AnyType extends
 
         return  nivel(getRoot(), elem, 0);
     }
+
 
     private int nivel(BinaryNode<AnyType> nodo, AnyType elem, int res){
 
@@ -580,146 +587,99 @@ public class BinarySearchTree<AnyType extends
     //	2000.34
     //	S
 
+    //mostrar
+    public void mostrar(BinaryNode<AnyType> nodo) {
+        //Profundidad
+        int profundidad = this.nivel(nodo.getElement());
+        for (int i = 0; i < profundidad; i++) {
+            System.out.print(" ");
+        }
+        System.out.println("- " +nodo.getElement().toString());
+
+        if (nodo.getLeft() != null) {
+            mostrar(nodo.getLeft());
+        }
+
+        if (nodo.getRight() != null) {
+            mostrar(nodo.getRight());
+        }
+
+    }
+    //Metodo publico arbol esta equilibrado
+    public boolean esEquilibrado() {
+        ArrayList<Integer> nodosContados = new ArrayList<>();
+        return esEquilibradoRecursivo(root, nodosContados);
+    }
+    private boolean esEquilibradoRecursivo(BinaryNode<AnyType> nodo, ArrayList<Integer> nodosContados) {
+        if (nodo == null) {
+            return true; // Árbol vacío es considerado equilibrado
+        }
+
+        ArrayList<Integer> izqNodos = new ArrayList<>();
+        ArrayList<Integer> derNodos = new ArrayList<>();
+
+        boolean izqEsEquilibrado = esEquilibradoRecursivo(nodo.getLeft(), izqNodos);
+        boolean derEsEquilibrado = esEquilibradoRecursivo(nodo.getRight(), derNodos);
+
+        // Calcular la cantidad de nodos en el subárbol izquierdo y derecho
+        int nodosIzquierdo = izqNodos.isEmpty() ? 0 : izqNodos.get(0);
+        int nodosDerecho = derNodos.isEmpty() ? 0 : derNodos.get(0);
+
+        // Agregar la cantidad de nodos en el subárbol actual al ArrayList
+        nodosContados.add(1 + nodosIzquierdo + nodosDerecho);
+
+        // Verificar la diferencia en la cantidad de nodos entre subárboles
+        return Math.abs(nodosIzquierdo - nodosDerecho) <= 1 && izqEsEquilibrado && derEsEquilibrado;
+    }
+
     public static void main( String [ ] args ) throws IOException
     {
-        BinarySearchTree<Person> t = new BinarySearchTree<Person>
-                ( new OrderPersonByName() );
-        // ordena por nombre usa el COMPARATOR OrderPersonByName
-        // aunque nombre no es una buena clave porque puede ver nombre repetitivo y es la clave para insertar elementos
-        String rutaArchivo = "/home/reyfox11-spark/Documentos/JavaIntellijCurso/matricesBidimensionales/src/org/actividad2viu/arboles/binario/archivo.txt";
-        // Crear un objeto File con la ruta del archivo
-        File archivo = new File(rutaArchivo);
-        if (archivo.exists()) {
-            System.out.println("El archivo existe en la ruta especificada.");
+        System.out.println("*******************Pruebas de buscando nodos en nuestro arbol, mostrar un elemento en concreto");
+        BinarySearchTree<Integer> arbolEquilibrado = new BinarySearchTree<Integer>();
+        
+        // Pruebas realizadas para el arbol equilibrado
+        /*arbolEquilibrado.insert(6);
+        arbolEquilibrado.insert(8);
+        arbolEquilibrado.insert(10);
+        arbolEquilibrado.insert(7);
+        arbolEquilibrado.insert(2);
+        arbolEquilibrado.insert(1);
+        arbolEquilibrado.insert(4);
+        arbolEquilibrado.insert(3);
+        
+        System.out.println("Es equilibrado árbol");
+        System.out.println(arbolEquilibrado.esEquilibrado());*/
+        Scanner sc = new Scanner(System.in);
+        System.out.println( "Inserte su longitud ");
+        int nLength = sc.nextInt();
+
+        for (int i = 0; i < nLength; i++ ){
+            System.out.print("Ingrese el valor para la posición [" + i + "]: ");
+            arbolEquilibrado.insert(sc.nextInt());
         }
-        Scanner in = new Scanner(new FileReader
-                (rutaArchivo));//leemos el archivo
-        String line = new String();
-        String tipo = new String();
-        String dni = new String();
-        String nombre = new String();
-        Integer edad ;
-        String telf = new String();
-        Double calif_o_salario ;
+        sc.close();
+        arbolEquilibrado.mostrar(arbolEquilibrado.getRoot());
+        System.out.println("Es Equilibrado:"+ arbolEquilibrado.esEquilibrado());
+        //Ejercicio 2, a) Dibujar el arbol de busqueda binaria despues de insertar los elementos 
+        int[] elements = { 50, 25, 14, 10, 56, 30, 45, 9, 20, 62, 18, 54, 55 };
 
-        //Leer archivo e ir guardando a los estudiantes
-        // y empleados en el �rbol
-
-        while (in.hasNextLine()) {
-            line = in.nextLine();
-            tipo = line.split(" ")[0];
-            if (tipo.equals("S")) {
-                line = in.nextLine();
-                dni = line.split(" ")[0];
-                nombre = in.nextLine();
-                line = in.nextLine();
-                edad = Integer.parseInt(line.split(" ")[0]);
-                line = in.nextLine();
-                telf = line.split(" ")[0];
-                line = in.nextLine();
-                calif_o_salario = Double.parseDouble(line.split(" ")[0]);
-                Student est = new Student(dni,nombre,edad,telf,calif_o_salario);
-                t.insert(est);
-            }
-            if (tipo.equals("E")) {
-                line = in.nextLine();
-                dni = line.split(" ")[0];
-                nombre = in.nextLine();
-                line = in.nextLine();
-                edad = Integer.parseInt(line.split(" ")[0]);
-                line = in.nextLine();
-                telf = line.split(" ")[0];
-                line = in.nextLine();
-                calif_o_salario = Double.parseDouble(line.split(" ")[0]);
-                Employee emp = new Employee(dni,nombre,edad,telf,calif_o_salario);
-                t.insert(emp);
-            }
+        BinarySearchTree<Integer> tree = new BinarySearchTree<Integer>();
+        for (int element : elements) {
+            tree.insert(element);
+            System.out.println("Después de insertar " + element + ": ");
+            tree.mostrar(tree.getRoot());
+            System.out.println();
         }
-        System.out.println( "Ordenados por nombre: " );
-        t.printInOrder();
 
-        in.close();
-        System.out.println("************************Otra parte***********");
-        BinarySearchTree<Person> t1 = new BinarySearchTree<Person>(  );//Creamos un nuevo arbol, le passamos un comparetor
-        // ordena por DNI
-        in = new Scanner(new FileReader
-                (rutaArchivo));
-
-        while (in.hasNextLine()) {
-            line = in.nextLine();
-            tipo = line.split(" ")[0];
-            if (tipo.equals("S")) {
-                line = in.nextLine();
-                dni = line.split(" ")[0];
-                nombre = in.nextLine();
-                line = in.nextLine();
-                edad = Integer.parseInt(line.split(" ")[0]);
-                line = in.nextLine();
-                telf = line.split(" ")[0];
-                line = in.nextLine();
-                calif_o_salario = Double.parseDouble(line.split(" ")[0]);
-                Student est = new Student(dni,nombre,edad,telf,calif_o_salario);
-                t1.insert(est);
-            }
-            if (tipo.equals("E")) {
-                line = in.nextLine();
-                dni = line.split(" ")[0];
-                nombre = in.nextLine();
-                line = in.nextLine();
-                edad = Integer.parseInt(line.split(" ")[0]);
-                line = in.nextLine();
-                telf = line.split(" ")[0];
-                line = in.nextLine();
-                calif_o_salario = Double.parseDouble(line.split(" ")[0]);
-                Employee emp = new Employee(dni,nombre,edad,telf,calif_o_salario);
-                t1.insert(emp);
-            }
+        System.out.println("remover ");
+        //Ejercicio 2, b) Dibujar los árboles qur se va obteniendo despues de eliminar sucesivamente los
+        //elementos 50,25,14 del árbol obtenido en el ejercicio anterior.
+        int[] elementsEliminar = { 50, 25, 14};
+        for (int element : elementsEliminar) {
+            System.out.println("Eliminamos el elemento " + element + ": ");
+            tree.remove(element);
+            tree.mostrar(tree.getRoot());
+            System.out.println();
         }
-        System.out.println( "Ordenados por DNI: " );
-        t1.printInOrder();
-
-
-     /*
-     t.insert(22);
-     t.insert(18);
-     t.insert(16);
-     t.insert(14);
-     t.insert(12);
-     t.insert(17);
-     t.insert(20);
-     t.insert(19);
-     t.insert(26);
-     t.insert(24);
-     t.insert(23);
-     t.insert(28);
-     //Listar en preorder
-     t.printPreOrder();
-     int nivel = t.nivel(14);
-     System.out.println( "nivel = " + nivel);
-
-     System.out.println( "es avl? = " + t.test_AVL());
-
-
-	 final int NUMS = 4000;
-     final int GAP  =   37;
-     System.out.println( "Checking... (no more output means success)" );
-
-     for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-         t.insert( i );
-
-     for( int i = 1; i < NUMS; i += 2 )
-         t.remove( i );
-
-     if( t.findMin( ) != 2 || t.findMax( ) != NUMS - 2 )
-         System.out.println( "FindMin or FindMax error!" );
-
-     for( int i = 2; i < NUMS; i += 2 )
-          if( t.find( i ) != i )
-              System.out.println( "Find error1!" );
-
-     for( int i = 1; i < NUMS; i += 2 )
-         if( t.find( i ) != null )
-             System.out.println( "Find error2!" );
-*/
     }
 }
